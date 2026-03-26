@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gradient Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Fullscreen Preview Overlay -->
+    <div id="fullscreen-preview" class="fullscreen-preview hidden">
+        <button id="exit-fullscreen" class="exit-fullscreen-btn" title="Exit fullscreen (Esc)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span id="toast-message">Copied!</span>
+    </div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <div class="logo-icon" id="logo-icon"></div>
+                <div>
+                    <h1>Gradient Studio</h1>
+                    <p class="tagline">Craft beautiful gradients visually</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <button id="btn-random" class="btn btn-ghost" title="Random gradient (R)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 002 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"></path>
+                        <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                    <span>Random</span>
+                </button>
+                <button id="btn-fullscreen" class="btn btn-ghost" title="Fullscreen preview (F)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <polyline points="9 21 3 21 3 15"></polyline>
+                        <line x1="21" y1="3" x2="14" y2="10"></line>
+                        <line x1="3" y1="21" x2="10" y2="14"></line>
+                    </svg>
+                    <span>Fullscreen</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="main-layout">
+            <!-- Preview Panel -->
+            <section class="preview-panel">
+                <div id="gradient-preview" class="gradient-preview">
+                    <div class="preview-overlay">
+                        <span class="preview-label">Live Preview</span>
+                    </div>
+                </div>
+
+                <!-- CSS Output -->
+                <div class="css-output-card">
+                    <div class="css-output-header">
+                        <span class="css-output-label">CSS Code</span>
+                        <button id="btn-copy" class="btn btn-sm btn-accent" title="Copy CSS (C)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"></path>
+                            </svg>
+                            Copy
+                        </button>
+                    </div>
+                    <code id="css-output" class="css-output-code"></code>
+                </div>
+            </section>
+
+            <!-- Controls Panel -->
+            <section class="controls-panel">
+                <!-- Gradient Type -->
+                <div class="control-card">
+                    <h3 class="control-title">Gradient Type</h3>
+                    <div class="type-selector">
+                        <button class="type-btn active" data-type="linear">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="19" x2="19" y2="5"></line>
+                                <polyline points="15 5 19 5 19 9"></polyline>
+                            </svg>
+                            Linear
+                        </button>
+                        <button class="type-btn" data-type="radial">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <circle cx="12" cy="12" r="4"></circle>
+                            </svg>
+                            Radial
+                        </button>
+                        <button class="type-btn" data-type="conic">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 2a10 10 0 0110 10H12V2z"></path>
+                                <circle cx="12" cy="12" r="10"></circle>
+                            </svg>
+                            Conic
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Angle Control -->
+                <div class="control-card" id="angle-card">
+                    <h3 class="control-title">
+                        Direction
+                        <span id="angle-value" class="control-value">90°</span>
+                    </h3>
+                    <div class="angle-control">
+                        <div class="angle-dial-container">
+                            <div class="angle-dial" id="angle-dial">
+                                <div class="angle-dial-indicator" id="angle-indicator"></div>
+                                <div class="angle-dial-center"></div>
+                            </div>
+                        </div>
+                        <input type="range" id="angle-slider" class="slider" min="0" max="360" value="90">
+                    </div>
+                </div>
+
+                <!-- Color Stops -->
+                <div class="control-card">
+                    <div class="control-title-row">
+                        <h3 class="control-title">Color Stops</h3>
+                        <button id="btn-add-color" class="btn btn-sm btn-ghost" title="Add color stop">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add
+                        </button>
+                    </div>
+                    <div id="color-stops" class="color-stops"></div>
+                </div>
+
+                <!-- Animation Toggle -->
+                <div class="control-card">
+                    <div class="control-title-row">
+                        <h3 class="control-title">Animate Gradient</h3>
+                        <label class="toggle">
+                            <input type="checkbox" id="toggle-animate">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <p class="control-hint">Smoothly animates the gradient colors</p>
+                    <div id="animation-speed-container" class="hidden">
+                        <h3 class="control-title" style="margin-top: 12px;">
+                            Speed
+                            <span id="speed-value" class="control-value">5s</span>
+                        </h3>
+                        <input type="range" id="speed-slider" class="slider" min="1" max="15" value="5">
+                    </div>
+                </div>
+
+                <!-- Presets -->
+                <div class="control-card">
+                    <h3 class="control-title">Presets</h3>
+                    <div id="presets-grid" class="presets-grid"></div>
+                </div>
+
+                <!-- Export -->
+                <div class="control-card">
+                    <h3 class="control-title">Export</h3>
+                    <div class="export-buttons">
+                        <button id="btn-export-png" class="btn btn-outline">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Download PNG
+                        </button>
+                        <button id="btn-copy-css" class="btn btn-outline">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            Copy Full CSS
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <p>Press <kbd>R</kbd> for random &middot; <kbd>F</kbd> for fullscreen &middot; <kbd>C</kbd> to copy CSS</p>
+        </footer>
+    </div>
+
+    <!-- Hidden canvas for export -->
+    <canvas id="export-canvas" width="1920" height="1080" style="display:none;"></canvas>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
